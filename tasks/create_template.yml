@@ -1,12 +1,11 @@
 ---
 - name: Template Create Template
   zbx_template:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ template.name }}"
   register: created_template
-
 
 - set_fact:
     lzbx_item_applications: "{{ template.zitems | default([], True) | ops_select_keys_from_list(['applications']) | ops_flatten | unique }}"
@@ -14,9 +13,9 @@
 
 - name: Create Application
   zbx_application:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ item }}"
     template_name: "{{ template.name }}"
   with_items:
@@ -26,9 +25,9 @@
 
 - name: Create Items
   zbx_item:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     key: "{{ item.key }}"
     name: "{{ item.name | default(item.key, true) }}"
     value_type: "{{ item.value_type | default('int') }}"
@@ -49,9 +48,9 @@
 
 - name: Create Web Checks
   zbx_httptest:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ item.name }}"
     application: "{{ item.application }}"
     interval: "{{ item.interval }}"
@@ -61,9 +60,9 @@
 
 - name: Create Triggers
   zbx_trigger:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ item.name }}"
     description: "{{ item.description | default('', True) }}"
     dependencies: "{{ item.dependencies | default([], True) }}"
@@ -75,9 +74,9 @@
 
 - name: Create Actions
   zbx_action:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     state: "{{ item.state | default('present', True) }}"
     name: "{{ item.name }}"
     status: "{{ item.status | default('enabled', True) }}"
@@ -88,9 +87,9 @@
 
 - name: Create Discoveryrules
   zbx_discoveryrule:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ item.name }}"
     key: "{{ item.key }}"
     lifetime: "{{ item.lifetime }}"
@@ -100,9 +99,9 @@
 
 - name: Create Item Prototypes
   zbx_itemprototype:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ item.name }}"
     key: "{{ item.key }}"
     discoveryrule_key: "{{ item.discoveryrule_key }}"
@@ -120,9 +119,9 @@
 
 - name: Create Trigger Prototypes
   zbx_triggerprototype:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ item.name }}"
     expression: "{{ item.expression }}"
     url: "{{ item.url | default('', True) }}"
@@ -132,9 +131,9 @@
 
 - name: Create Graphs
   zbx_graph:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ item.name }}"
     height: "{{ item.height }}"
     width: "{{ item.width }}"
@@ -145,12 +144,11 @@
 
 - name: Create Graph Prototypes
   zbx_graphprototype:
-    zbx_server: "{{ server }}"
-    zbx_user: "{{ user }}"
-    zbx_password: "{{ password }}"
+    zbx_server: "{{ lib_zabbix_server }}"
+    zbx_user: "{{ lib_zabbix_user }}"
+    zbx_password: "{{ lib_zabbix_password }}"
     name: "{{ item.name }}"
     height: "{{ item.height }}"
     width: "{{ item.width }}"
     graph_items: "{{ item.graph_items }}"
   with_items: "{{ template.zgraphprototypes | default([]) }}"
-
