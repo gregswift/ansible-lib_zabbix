@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: OpenShift Operations team
+  description: Ansible role for providing Zabbix modules
+  company: Red Hat, Inc.
+  issue_tracker_url: http://github.com/gregswift/ansible-lib_zabbix/issues
+  license: ASLv2
+  min_ansible_version: 2.0
+  platforms:
+  - name: GenericLinux
+    versions:
+    - all
+    - any
+  categories:
+  - secrets
+dependencies: []
