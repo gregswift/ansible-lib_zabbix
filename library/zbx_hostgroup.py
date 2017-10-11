@@ -29,7 +29,7 @@
 # pylint: disable=import-error
 from openshift_tools.zbxapi import ZabbixAPI, ZabbixConnection
 
-def exists(content, key='result'):
+def exists(content, hname, key='result'):
     ''' Check if key exists in content or the size of content[key] > 0
     '''
     if not content.has_key(key):
@@ -38,7 +38,18 @@ def exists(content, key='result'):
     if not content[key]:
         return False
 
+    if not get_specific(content, hname):
+        return False
+
     return True
+
+def get_specific(content, hname):
+    ''' Nested groups return all children groups, we need the exact requested group
+    '''
+    for result in content['result']:
+        if result['name'] == hname:
+            return result
+    return None
 
 def main():
     ''' ansible module for hostgroup
@@ -50,6 +61,7 @@ def main():
             zbx_user=dict(default=os.environ.get('ZABBIX_USER', None), type='str'),
             zbx_password=dict(default=os.environ.get('ZABBIX_PASSWORD', None), type='str'),
             zbx_debug=dict(default=False, type='bool'),
+            zbx_verify_cert=dict(default=True, type='bool'),
             name=dict(default=None, type='str'),
             state=dict(default='present', type='str'),
         ),
@@ -59,6 +71,7 @@ def main():
     zapi = ZabbixAPI(ZabbixConnection(module.params['zbx_server'],
                                       module.params['zbx_user'],
                                       module.params['zbx_password'],
+                                      module.params['zbx_verify_cert'],
                                       module.params['zbx_debug']))
 
     #Set the instance and the template for the rest of the calls
@@ -75,23 +88,23 @@ def main():
         module.exit_json(changed=False, results=content['result'], state="list")
 
     if state == 'absent':
-        if not exists(content):
+        if not exists(content, hname):
             module.exit_json(changed=False, state="absent")
 
-        content = zapi.get_content(zbx_class_name, 'delete', [content['result'][0][idname]])
+        content = zapi.get_content(zbx_class_name, 'delete', [get_specific(content, hname)[idname]])
         module.exit_json(changed=True, results=content['result'], state="absent")
 
     if state == 'present':
         params = {'name': hname}
 
-        if not exists(content):
+        if not exists(content, hname):
             # if we didn't find it, create it
             content = zapi.get_content(zbx_class_name, 'create', params)
             module.exit_json(changed=True, results=content['result'], state='present')
         # already exists, we need to update it
         # let's compare properties
         differences = {}
-        zab_results = content['result'][0]
+        zab_results = get_specific(content, hname)
         for key, value in params.items():
             if zab_results[key] != value and zab_results[key] != str(value):
                 differences[key] = value
