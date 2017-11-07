@@ -118,7 +118,7 @@ def main():
         argument_spec=dict(
             zbx_server=dict(default='https://localhost/zabbix/api_jsonrpc.php', type='str'),
             zbx_user=dict(default=os.environ.get('ZABBIX_USER', None), type='str'),
-            zbx_password=dict(default=os.environ.get('ZABBIX_PASSWORD', None), type='str'),
+            zbx_password=dict(default=os.environ.get('ZABBIX_PASSWORD', None), type='str', no_log=True),
             zbx_debug=dict(default=False, type='bool'),
             debug_mode=dict(default='disabled', type='str'),
             gui_access=dict(default='default', type='str'),
