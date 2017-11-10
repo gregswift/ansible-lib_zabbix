@@ -483,7 +483,7 @@ def get_action_operations(ansible_module, zapi, inc_operations):
             optemplate = []
             for template in operation['optemplate']:
                 tid = get_template_id_by_name(zapi, template)
-                opgroup.append({'templateid': tid})
+                optemplate.append({'templateid': tid})
             operation['optemplate'] = optemplate
 
         # Handle Operation conditions:
