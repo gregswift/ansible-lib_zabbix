@@ -329,8 +329,8 @@ def get_host_group_id_by_name(zapi, hg_name):
                                'get',
                                {'filter': {'name': hg_name}})
     for result in content['result']:
-        if result['name'] == hname:
-            return result
+        if result['name'] == hg_name:
+            return result['groupid']
     return None
 
 def get_condition_type(event_source, inc_condition):
