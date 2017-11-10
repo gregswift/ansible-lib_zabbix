@@ -553,7 +553,7 @@ def main():
             zbx_user=dict(default=os.environ.get('ZABBIX_USER', None), type='str'),
             zbx_password=dict(default=os.environ.get('ZABBIX_PASSWORD', None), type='str', no_log=True),
             zbx_debug=dict(default=False, type='bool'),
-
+            zbx_verify_cert=dict(default=True, type='bool'),
             name=dict(default=None, type='str'),
             event_source=dict(default='trigger', choices=['trigger', 'discovery', 'auto', 'internal'], type='str'),
             action_subject=dict(default="{TRIGGER.NAME}: {TRIGGER.STATUS}", type='str'),
@@ -579,6 +579,7 @@ def main():
     zapi = ZabbixAPI(ZabbixConnection(module.params['zbx_server'],
                                       module.params['zbx_user'],
                                       module.params['zbx_password'],
+                                      module.params['zbx_verify_cert'],
                                       module.params['zbx_debug']))
 
     #Set the instance and the template for the rest of the calls
