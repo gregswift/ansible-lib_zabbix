@@ -323,12 +323,15 @@ def get_template_id_by_name(zapi, t_name):
 
 
 def get_host_group_id_by_name(zapi, hg_name):
-    '''Get hostgroup id by name'''
+    '''Get hostgroup id by name. Nested hostgroups returns all matches,
+    so find the specific match'''
     content = zapi.get_content('hostgroup',
                                'get',
                                {'filter': {'name': hg_name}})
-
-    return content['result'][0]['groupid']
+    for result in content['result']:
+        if result['name'] == hname:
+            return result
+    return None
 
 def get_condition_type(event_source, inc_condition):
     '''determine the condition type'''
