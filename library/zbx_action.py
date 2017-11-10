@@ -669,7 +669,7 @@ def main():
         differences = {}
         zab_results = content['result'][0]
         for key, value in params.items():
-
+          try:
             if key == 'operations':
                 ops = operation_differences(zab_results[key], value)
                 if ops:
@@ -680,8 +680,10 @@ def main():
                 if filters:
                     differences[key] = filters
 
-            elif zab_results[key] != value and zab_results[key] != str(value):
+            elif key in zab_results and zab_results[key] != value and zab_results[key] != str(value):
                 differences[key] = value
+          except KeyError:
+            module.exit_json(failed=True, changed=True, results={'zab_results': zab_results,'key': key,'value':value}, state="present")
 
         if not differences:
             module.exit_json(changed=False, results=zab_results, state="present")
