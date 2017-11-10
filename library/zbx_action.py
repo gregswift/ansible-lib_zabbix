@@ -467,6 +467,22 @@ def get_action_operations(ansible_module, zapi, inc_operations):
         elif operation['operationtype'] == OPERATION_REMOTE_COMMAND:
             action_remote_command(ansible_module, zapi, operation)
 
+        elif operation['operationtype'] in (4, 5):
+            # Add or remove group from host
+            opgroup = []
+            for group in operation['opgroup']:
+                gid = get_host_group_id_by_name(zapi, group)
+                opgroup.append({'groupid': gid})
+            operation['opgroup'] = opgroup
+
+        elif operation['operationtype'] in (6, 7):
+            # Add or remove template from host
+            optemplate = []
+            for template in operation['optemplate']:
+                tid = get_template_id_by_name(zapi, template)
+                opgroup.append({'templateid': tid})
+            operation['optemplate'] = optemplate
+
         # Handle Operation conditions:
         # Currently there is only 1 available which
         # is 'event acknowledged'.  In the future
