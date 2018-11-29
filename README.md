@@ -16,7 +16,7 @@ None
 Dependencies
 ------------
 
-This depeonds on the zbxapi.py library located here: https://github.com/openshift/openshift-tools under openshift_tools/monitoring/zbxapi.py for now.
+This depends on the zbxapi.py library located here: https://github.com/openshift/openshift-tools under openshift_tools/monitoring/zbxapi.py for now.
 
 Example Playbook
 ----------------
